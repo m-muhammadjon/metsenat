@@ -45,3 +45,35 @@ class Sponsor(models.Model):
 
     def get_total_payment_amount(self):
         return self.payment_amount or self.other_payment
+
+
+class University(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'University'
+        verbose_name_plural = 'Universities'
+
+
+class Student(models.Model):
+    class DEGREE_CHOICES(models.TextChoices):
+        bachelor = ('bachelor', 'Bachelor')
+        master = ('master', 'Master')
+
+    full_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=255, validators=[validators.phone_number_validator])
+    university = models.ForeignKey(University,
+                                   on_delete=models.SET_NULL,
+                                   related_name='students',
+                                   null=True)
+    required_amount = models.PositiveIntegerField()
+    allocated_amount = models.PositiveIntegerField(default=0, blank=True)
+    sponsors = models.ManyToManyField(Sponsor,
+                                      related_name='sponsored_students',
+                                      blank=True)
+
+    def __str__(self):
+        return f'student {self.full_name}'
