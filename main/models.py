@@ -23,5 +23,13 @@ class Sponsor(models.Model):
     other_price = models.PositiveBigIntegerField(null=True, blank=True)
     organization_name = models.CharField(max_length=255, null=True, blank=True)
 
+
     def __str__(self):
         return f'{self.full_name}'
+
+    def save(self, *args, **kwargs):
+        if self.type == 'legal_entity' and not self.organization_name:
+            raise ValueError('Invalid organisation name')
+        if self.payment_amount == 0 and not self.other_price:
+            raise ValueError('Invalid other price')
+        super(Sponsor, self).save(*args, **kwargs)
