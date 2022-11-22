@@ -93,8 +93,13 @@ class DonationView(generics.ListCreateAPIView):
         elif not sponsor.enough_money(money):
             return Response(
                 {'success': False,
-                 'message': f'Sponsor\s money is not enough.\nSuggested money {student.allocated_amount - sponsor.rest_of_money()}'},
+                 'message': f'Sponsor\s money is not enough.\nSuggested money {min(student.required_amount - student.allocated_amount, sponsor.rest_of_money())}'},
                 status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'success': False, 'message': 'An unexpected error occurred'},
                         status=status.HTTP_400_BAD_REQUEST)
+
+
+class DashboardView(generics.ListAPIView):
+    queryset = models.Dashboard.objects.all()
+    serializer_class = serializers.DashboardSerializer

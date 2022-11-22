@@ -103,3 +103,34 @@ class Donation(models.Model):
 
     def __str__(self):
         return f'Sponsor {self.sponsor.full_name} donated to student {self.student.full_name}'
+
+
+class Dashboard(models.Model):
+    amount_paid = models.PositiveBigIntegerField(default=0)
+    amount_requested = models.PositiveBigIntegerField(default=0)
+    amount_due = models.PositiveBigIntegerField(default=0)
+    sponsors_count = models.PositiveIntegerField(default=0)
+    students_count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return 'Dashboard'
+
+    class Meta:
+        verbose_name = 'Dashboard'
+        verbose_name_plural = 'Dashboard'
+
+
+class SponsorDailyStat(models.Model):
+    count = models.PositiveIntegerField(default=0)
+    date = models.DateField()
+
+    def __str__(self):
+        return f'Sponsor {self.date}'
+
+
+class StudentDailyStat(models.Model):
+    count = models.PositiveIntegerField(default=0)
+    date = models.DateField()
+
+    def __str__(self):
+        return f'Student {self.date}'

@@ -1,5 +1,4 @@
-from rest_framework import serializers, status
-from rest_framework.response import Response
+from rest_framework import serializers
 
 from main import models
 
@@ -42,3 +41,30 @@ class DonationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Donation
         fields = '__all__'
+
+
+class SponsorDailyStatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SponsorDailyStat
+        exclude = ['id']
+
+
+class StudentDailyStatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.StudentDailyStat
+        exclude = ['id']
+
+
+class DashboardSerializer(serializers.ModelSerializer):
+    sponsor_chart = serializers.SerializerMethodField()
+    student_chart = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Dashboard
+        exclude = ['id']
+
+    def get_sponsor_chart(self, obj):
+        return SponsorDailyStatSerializer(models.SponsorDailyStat.objects.all().order_by('date'), many=True).data
+
+    def get_student_chart(self, obj):
+        return SponsorDailyStatSerializer(models.StudentDailyStat.objects.all().order_by('date'), many=True).data
