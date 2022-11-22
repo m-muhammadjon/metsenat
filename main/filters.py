@@ -9,3 +9,9 @@ class SponsorFilter(filters.FilterSet):
     class Meta:
         model = models.Sponsor
         fields = ['status', 'payment_amount', 'created_at']
+
+
+class StudentFilter(filters.FilterSet):
+    class Meta:
+        model = models.Student
+        fields = ['degree', 'university']

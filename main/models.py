@@ -46,6 +46,12 @@ class Sponsor(models.Model):
     def get_total_payment_amount(self):
         return self.payment_amount or self.other_payment
 
+    def rest_of_money(self):
+        return self.get_total_payment_amount() - self.amount_spent
+
+    def enough_money(self, money):
+        return money <= self.rest_of_money()
+
 
 class University(models.Model):
     name = models.CharField(max_length=255)
@@ -66,14 +72,34 @@ class Student(models.Model):
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255, validators=[validators.phone_number_validator])
     university = models.ForeignKey(University,
-                                   on_delete=models.SET_NULL,
-                                   related_name='students',
-                                   null=True)
+                                   on_delete=models.DO_NOTHING,
+                                   related_name='students')
+    degree = models.CharField(max_length=255, choices=DEGREE_CHOICES.choices)
     required_amount = models.PositiveIntegerField()
     allocated_amount = models.PositiveIntegerField(default=0, blank=True)
-    sponsors = models.ManyToManyField(Sponsor,
-                                      related_name='sponsored_students',
-                                      blank=True)
 
     def __str__(self):
         return f'student {self.full_name}'
+
+    def earned(self):
+        return self.required_amount == self.allocated_amount
+
+    def clean_money(self, money):
+        return money + self.allocated_amount <= self.required_amount
+
+
+class Donation(models.Model):
+    sponsor = models.ForeignKey(Sponsor,
+                                related_name='donations',
+                                on_delete=models.SET_NULL,
+                                null=True)
+    student = models.ForeignKey(Student,
+                                related_name='sponsors',
+                                on_delete=models.SET_NULL,
+                                null=True)
+    amount = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'Sponsor {self.sponsor.full_name} donated to student {self.student.full_name}'

@@ -104,6 +104,7 @@ JAZZMIN_SETTINGS = {
         "main.Sponsor": "fas fa-handshake",
         "main.University": "fas fa-university",
         "main.Student": "fas fa-user-graduate",
+        "main.Donation": "fas fa-donate",
 
     },
     # Icons that are used when one is not manually specified
