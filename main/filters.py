@@ -15,3 +15,9 @@ class StudentFilter(filters.FilterSet):
     class Meta:
         model = models.Student
         fields = ['degree', 'university']
+
+
+class DonationFilter(filters.FilterSet):
+    class Meta:
+        model = models.Donation
+        fields = ['student', ]

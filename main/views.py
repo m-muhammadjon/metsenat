@@ -60,10 +60,11 @@ class StudentDetailView(generics.RetrieveUpdateDestroyAPIView):
 class DonationView(generics.ListCreateAPIView):
     queryset = models.Donation.objects.all()
     serializer_class = serializers.DonationSerializer
+    filter_backends = [drf_filters.DjangoFilterBackend]
+    filterset_class = filters.DonationFilter
 
     def post(self, request, *args, **kwargs):
         errors = [i if not i in request.data else -1 for i in ['sponsor', 'student', 'amount']]
-        print(errors)
         error_message = {}
         for error in errors:
             if error != -1:
@@ -79,7 +80,6 @@ class DonationView(generics.ListCreateAPIView):
             return Response(
                 {'success': False, 'message': f'Student already earned enough money you do not need to add sponsor'},
                 status=status.HTTP_400_BAD_REQUEST)
-
         elif not student.clean_money(money):
             return Response(
                 {'success': False,
@@ -93,11 +93,16 @@ class DonationView(generics.ListCreateAPIView):
         elif not sponsor.enough_money(money):
             return Response(
                 {'success': False,
-                 'message': f'Sponsor\s money is not enough.\nSuggested money {min(student.required_amount - student.allocated_amount, sponsor.rest_of_money())}'},
+                 'message': f'Sponsor\'s money is not enough.\nSuggested money {min(student.required_amount - student.allocated_amount, sponsor.rest_of_money())}'},
                 status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'success': False, 'message': 'An unexpected error occurred'},
                         status=status.HTTP_400_BAD_REQUEST)
+
+
+class DonationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Donation.objects.all()
+    serializer_class = serializers.DonationSerializer
 
 
 class DashboardView(generics.ListAPIView):
