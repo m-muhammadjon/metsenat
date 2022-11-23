@@ -154,3 +154,4 @@ try:
     from backend.local_settings import *
 except ModuleNotFoundError:
     pass
+from backend.jazzmin import *
