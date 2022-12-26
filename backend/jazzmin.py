@@ -105,6 +105,9 @@ JAZZMIN_SETTINGS = {
         "main.University": "fas fa-university",
         "main.Student": "fas fa-user-graduate",
         "main.Donation": "fas fa-donate",
+        "main.Dashboard": "fas fa-chart-line",
+        "main.SponsorDailyStat": "far fa-chart-bar",
+        "main.StudentDailyStat": "far fa-chart-bar",
 
     },
     # Icons that are used when one is not manually specified
